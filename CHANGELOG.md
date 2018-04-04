@@ -1,4 +1,4 @@
-# TODO changelog
+# tape-modern changelog
 
 ## 1.0.0
 
