@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "diagnostics": true,
+        "noImplicitThis": true,
+        "noEmitOnError": true,
+        "importHelpers": true,
+        "lib": ["es5", "es6", "dom"]
+    },
+    "target": "ESNext",
+    "module": "ES6",
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
