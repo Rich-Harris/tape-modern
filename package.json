@@ -1,7 +1,7 @@
 {
   "name": "tape-modern",
   "description": "Minimum viable TAP-compliant testing framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": "Rich-Harris/tape-modern",
   "main": "dist/tape-modern.umd.js",
   "module": "dist/tape-modern.esm.js",
