@@ -10,7 +10,7 @@ export function test(name: string, fn: (t: Assertions) => Promise<void> | void) 
 		running = true;
 		console.log('TAP version 13');
 
-		dequeue();
+		Promise.resolve().then(dequeue);
 	}
 }
 
@@ -49,8 +49,8 @@ function logResult(ok: boolean, operator: string, msg: string, info: { actual?: 
 
 		if (isNode) {
 			const util = require('util');
-			if ('expected' in info) console.log(`  expected: ${util.format(info.expected).replace(/\n/m, `\n    `)}`);
-			if ('actual'   in info) console.log(`  actual:   ${util.format(info.actual).replace(/\n/m, `\n    `)}`);
+			if ('expected' in info) console.log(`  expected:\n    ${util.format(info.expected).replace(/\n/gm, `\n    `)}`);
+			if ('actual'   in info) console.log(`  actual:\n    ${util.format(info.actual).replace(/\n/gm, `\n    `)}`);
 		} else {
 			if ('expected' in info) console.log(`  expected:`, info.expected);
 			if ('actual'   in info) console.log(`  actual:`, info.actual);
@@ -134,7 +134,14 @@ async function dequeue() {
 
 	if (test) {
 		console.log(`# ${test.name}`);
-		await test.fn(assert);
+
+		try {
+			await test.fn(assert);
+		} catch (err) {
+			failed += 1;
+			console.log(`not ok ${i} — ${err.message}`);
+			console.error(`  ${err.stack.replace(/^\s+/gm, '    ')}`);
+		}
 
 		dequeue();
 	} else {
