@@ -21,20 +21,20 @@ function start() {
 	}
 }
 
-export function test(name: string, fn: (t: Assertions) => Promise<void> | void) {
-	tests.push({ name, fn, skip: false, only: false });
+export const test = Object.assign(function test(name: string, fn: (t: Assertions) => Promise<void> | void) {
+	tests.push({ name, fn, skip: false, only: false, shouldRun: false });
 	start();
-}
+}, {
+	skip(name: string, fn: (t: Assertions) => Promise<void> | void) {
+		tests.push({ name, fn, skip: true, only: false, shouldRun: false });
+		start();
+	},
 
-test.skip = function(name: string, fn: (t: Assertions) => Promise<void> | void) {
-	tests.push({ name, fn, skip: true, only: false });
-	start();
-};
-
-test.only = function(name: string, fn: (t: Assertions) => Promise<void> | void) {
-	tests.push({ name, fn, skip: false, only: true });
-	start();
-};
+	test(name: string, fn: (t: Assertions) => Promise<void> | void) {
+		tests.push({ name, fn, skip: false, only: true, shouldRun: false });
+		start();
+	}
+});
 
 let i = 0;
 let running = false;
