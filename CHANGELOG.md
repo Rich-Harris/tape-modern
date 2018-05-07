@@ -1,5 +1,9 @@
 # tape-modern changelog
 
+## 1.1.0
+
+* Add `test.only` and `test.skip`
+
 ## 1.0.1
 
 * Handle errors in tests

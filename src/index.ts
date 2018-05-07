@@ -3,16 +3,38 @@ export const done = new Promise(f => {
 	fulfil = f;
 });
 
-export function test(name: string, fn: (t: Assertions) => Promise<void> | void) {
-	tests.push({ name, fn });
-
+function start() {
 	if (!running) {
 		running = true;
 		console.log('TAP version 13');
 
-		Promise.resolve().then(dequeue);
+		Promise.resolve().then(() => {
+			const hasOnly = tests.some(test => test.only);
+			tests.forEach(test => {
+				test.shouldRun = test.skip
+					? false
+					: hasOnly ? test.only : true;
+			});
+
+			dequeue();
+		});
 	}
 }
+
+export function test(name: string, fn: (t: Assertions) => Promise<void> | void) {
+	tests.push({ name, fn, skip: false, only: false });
+	start();
+}
+
+test.skip = function(name: string, fn: (t: Assertions) => Promise<void> | void) {
+	tests.push({ name, fn, skip: true, only: false });
+	start();
+};
+
+test.only = function(name: string, fn: (t: Assertions) => Promise<void> | void) {
+	tests.push({ name, fn, skip: false, only: true });
+	start();
+};
 
 let i = 0;
 let running = false;
@@ -28,11 +50,15 @@ export type Assertions = {
 export type Test = {
 	name: string;
 	fn: (t: Assertions) => Promise<void> | void;
+	skip: boolean;
+	only: boolean;
+	shouldRun: boolean;
 }
 
 const tests: Test[] = [];
 let passed = 0;
 let failed = 0;
+let skipped = 0;
 
 const isNode = typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]';
 
@@ -133,6 +159,15 @@ async function dequeue() {
 	const test = tests[i++];
 
 	if (test) {
+		if (!test.shouldRun) {
+			if (test.skip) {
+				console.log(`# skip ${test.name}`);
+			}
+			skipped += 1;
+			dequeue();
+			return;
+		}
+
 		console.log(`# ${test.name}`);
 
 		try {
@@ -146,10 +181,12 @@ async function dequeue() {
 		dequeue();
 	} else {
 		// summarise
-		console.log(`\n1..${passed + failed}`);
-		console.log(`# tests ${passed + failed}`);
+		const total = passed + failed + skipped;
+		console.log(`\n1..${total}`);
+		console.log(`# tests ${total}`);
 		if (passed) console.log(`# pass ${passed}`);
 		if (failed) console.log(`# fail ${failed}`);
+		if (skipped) console.log(`# skip ${skipped}`);
 
 		fulfil();
 		if (isNode) process.exit(failed ? 1 : 0);
