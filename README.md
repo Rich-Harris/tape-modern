@@ -41,6 +41,10 @@ test('these tests will not pass', t => {
 	t.equal({}, {});
 	t.fail('womp womp');
 });
+
+test.skip('this test will not run', t => {
+	t.pass(false);
+});
 ```
 
 You can create custom assertions by adding methods to `assert`:
@@ -61,6 +65,30 @@ test('things that are array-like', t => {
 
 	t.isNotArray(divs);
 	t.isArray([...divs]);
+});
+```
+
+To run (a) selected test(s), use `test.only`:
+
+```js
+test('this test will not run', t => {
+	// ...
+});
+
+test.only('this test will run', t => {
+	// ...
+});
+
+test.only('so will this', t => {
+	// ...
+});
+```
+
+To skip a test, use `test.skip`:
+
+```js
+test.skip('this test will be skipped', t => {
+	// ...
 });
 ```
 

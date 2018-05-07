@@ -1,5 +1,9 @@
 # tape-modern changelog
 
+## 1.1.1
+
+* Fix typo
+
 ## 1.1.0
 
 * Add `test.only` and `test.skip`

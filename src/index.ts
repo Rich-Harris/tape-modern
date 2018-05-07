@@ -26,12 +26,12 @@ export const test = Object.assign(function test(name: string, fn: (t: Assertions
 	start();
 }, {
 	skip(name: string, fn: (t: Assertions) => Promise<void> | void) {
-		tests.push({ name, fn, skip: true, only: false, shouldRun: false });
+		tests.push({ name, fn, skip: true, only: false, shouldRun: null });
 		start();
 	},
 
-	test(name: string, fn: (t: Assertions) => Promise<void> | void) {
-		tests.push({ name, fn, skip: false, only: true, shouldRun: false });
+	only(name: string, fn: (t: Assertions) => Promise<void> | void) {
+		tests.push({ name, fn, skip: false, only: true, shouldRun: null });
 		start();
 	}
 });
