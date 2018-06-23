@@ -36,7 +36,8 @@ export const test = Object.assign(function test(name: string, fn: (t: Assertions
 	}
 });
 
-let i = 0;
+let testIndex = 0;
+let assertIndex = 0;
 let running = false;
 
 export type Assertions = {
@@ -63,11 +64,12 @@ let skipped = 0;
 const isNode = typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]';
 
 function logResult(ok: boolean, operator: string, msg: string, info: { actual?: any, expected?: any } = {}) {
+	assertIndex += 1;
 	if (ok) {
-		console.log(`ok ${i} — ${msg}`);
+		console.log(`ok ${assertIndex} — ${msg}`);
 		passed += 1;
 	} else {
-		console.log(`not ok ${i} — ${msg}`);
+		console.log(`not ok ${assertIndex} — ${msg}`);
 		failed += 1;
 
 		console.log('  ---');
@@ -156,7 +158,7 @@ export const assert: Assertions = {
 };
 
 async function dequeue() {
-	const test = tests[i++];
+	const test = tests[testIndex++];
 
 	if (test) {
 		if (!test.shouldRun) {
@@ -174,7 +176,7 @@ async function dequeue() {
 			await test.fn(assert);
 		} catch (err) {
 			failed += 1;
-			console.log(`not ok ${i} — ${err.message}`);
+			console.log(`not ok ${assertIndex} — ${err.message}`);
 			console.error(`  ${err.stack.replace(/^\s+/gm, '    ')}`);
 		}
 
