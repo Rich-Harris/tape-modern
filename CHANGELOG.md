@@ -1,5 +1,9 @@
 # tape-modern changelog
 
+## 1.1.2
+
+* Fix assertion numbering
+
 ## 1.1.1
 
 * Fix typo
